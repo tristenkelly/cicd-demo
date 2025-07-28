@@ -18,8 +18,6 @@ jobs:
           go-version: "1.23.0"
       - name: Build prod
         run: ./scripts/buildprod.sh
-      - name: Set up gcloud Cloud SDK environment
-        uses: google-github-actions/setup-gcloud@v2.1.5
 
   GCP:
     name: GCP
