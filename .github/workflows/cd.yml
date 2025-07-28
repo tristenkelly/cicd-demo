@@ -16,8 +16,14 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.0"
+      - name: Install Goose
+        run: go install github.com/pressly/goose@latest
       - name: Build prod
         run: ./scripts/buildprod.sh
+      - name: Run Migrations
+        run: ./scripts/migrateup.sh
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: auth
         uses: google-github-actions/auth@v2
         with:
@@ -30,3 +36,6 @@ jobs:
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/tranquil-petal-467321-e8/notely-ar-repo/notely:latest .
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/tranquil-petal-467321-e8/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project tranquil-petal-467321-e8 --max-instances=4
+
+      - name: Check for exposed creds
+        run: git diff
